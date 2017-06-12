@@ -4,7 +4,7 @@ import quizleague.domain._
 
 case class DomainContainer(
     
-    //applicationcontext:List[ApplicationContext],
+    applicationcontext:List[ApplicationContext],
     competition:List[Competition],
     fixtures:List[Fixtures],
     fixture:List[Fixture],

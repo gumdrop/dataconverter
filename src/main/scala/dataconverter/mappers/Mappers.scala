@@ -28,8 +28,8 @@ import quizleague.domain.ApplicationContext
 
 object Mappers {
 
-  implicit def ref[T <: Entity](in: CRef[_])(implicit tag: ClassTag[T]): Ref[T] = if(in == null) null else Ref[T](tag.runtimeClass.getSimpleName, in.id)
-  implicit def eref[T <: Entity](in: T)(implicit tag: ClassTag[T]): Ref[T] = Ref[T](tag.runtimeClass.getSimpleName, in.id)
+  implicit def ref[T <: Entity](in: CRef[_])(implicit tag: ClassTag[T]): Ref[T] = if(in == null) null else Ref[T](tag, in.id)
+  implicit def eref[T <: Entity](in: T)(implicit tag: ClassTag[T]): Ref[T] = Ref[T](tag, in.id)
 
   def map(in: CVenue)(implicit cc: ConversionContext): Venue = {
     import in._
@@ -64,7 +64,7 @@ object Mappers {
 
     val fixs = cc add fixtures.map(f => Fixture(uuid, description, competitionType.toString, f.venue, f.home, f.away, f.start, f.start, duration(f.start, f.end))).toList
 
-    cc add Fixtures(id, description, competitionType.toString, start, start, duration(start, end), fixs.map(eref[Fixture] _))
+    cc add Fixtures(id, description, "", start, start, duration(start, end), fixs.map(eref[Fixture] _))
 
   }
 
@@ -188,6 +188,7 @@ object Mappers {
   
   def map(in:GlobalApplicationData)(cc:ConversionContext) = {
     import in._
+    println(s"here $in")
     cc add ApplicationContext(id,leagueName,globalText,currentSeason,senderEmail,emailAliases.map(a => EmailAlias(a.alias,a.user)).toList,cloudStoreBucket)
   }
 }

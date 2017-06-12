@@ -19,7 +19,7 @@ object Converter {
 
     import quizleague.domain._
     DomainContainer(
-      //cc.get[ApplicationContext],
+      cc.get[ApplicationContext],
       cc.get[Competition],
       cc.get[Fixtures],
       cc.get[Fixture],
@@ -38,7 +38,7 @@ object Converter {
     import org.chilternquizleague.domain._
 
     def get[T <: CEntity](implicit tag: ClassTag[T]) = input(tag.runtimeClass.getName).asInstanceOf[ListBuffer[T]].toList
-
+    
     get[Venue].foreach(map _)
     get[User].foreach(map _)
     get[Team].foreach(map _)
@@ -46,8 +46,8 @@ object Converter {
     get[Results].foreach(map _)
     get[Competition].foreach(map(get[Results]) _)
     get[Season].foreach(map _)
-    //get[GlobalApplicationData].foreach(map _)
     get[CommonText].foreach(map _)
+    get[GlobalApplicationData].foreach(map(_)(cc))
 
 
   }
