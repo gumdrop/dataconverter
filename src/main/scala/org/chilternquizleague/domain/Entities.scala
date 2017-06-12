@@ -73,6 +73,9 @@ class CommonText extends BaseEntity{
   var name:String = null
 
   var text:JMap[String,TextEntry] = new HashMap
+
+  def getEntries:JList[TextEntry] = new ArrayList(text.values)
+  def setEntries(entries:JList[TextEntry]):Unit = entries.foreach {t => text put (t.name, t)}
   
   
 }
