@@ -48,10 +48,11 @@ case class CupCompetition(
 case class SubsidiaryLeagueCompetition(
   id:String,
   name:String,
+  fixtures:List[Ref[Fixtures]],
   results:List[Ref[Results]], 
   tables:List[Ref[LeagueTable]],
   text:Ref[Text]
-) extends Competition with SubsidiaryCompetition with ResultsCompetition with CompetitionTables
+) extends Competition with SubsidiaryCompetition with TeamCompetition with CompetitionTables
 
 case class SingletonCompetition(
   id:String,

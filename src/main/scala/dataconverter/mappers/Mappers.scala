@@ -147,7 +147,7 @@ object Mappers {
 //        
         results.foreach(r => cc remove[Results](r.id))
         
-        SubsidiaryLeagueCompetition(id, description, List(), leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
+        SubsidiaryLeagueCompetition(id, description,List(), List(), leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
 
       }
       
