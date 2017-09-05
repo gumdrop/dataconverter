@@ -1,6 +1,6 @@
 package quizleague.domain
 
-trait Entity {
+trait Entity extends Serializable  {
   val id:String
   val retired:Boolean
-}
+} 

@@ -27,6 +27,7 @@ object Converter {
       cc.get[LeagueTable],
       cc.get[Results].filter(_.fixtures != null),
       cc.get[Result],
+      cc.get[Reports],
       cc.get[Season],
       cc.get[Team],
       cc.get[Text],

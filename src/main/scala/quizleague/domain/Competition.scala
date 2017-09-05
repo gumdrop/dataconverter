@@ -4,7 +4,7 @@ import java.util.Date
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.Duration
-import io.circe.generic.JsonCodec
+import io.circe.generic._
 
 import quizleague.util.json.codecs.ScalaTimeCodecs._
 import quizleague.util.json.codecs.DomainCodecs._
@@ -48,11 +48,10 @@ case class CupCompetition(
 case class SubsidiaryLeagueCompetition(
   id:String,
   name:String,
-  fixtures:List[Ref[Fixtures]],
   results:List[Ref[Results]], 
   tables:List[Ref[LeagueTable]],
   text:Ref[Text]
-) extends Competition with SubsidiaryCompetition with TeamCompetition with CompetitionTables
+) extends Competition with SubsidiaryCompetition with ResultsCompetition with CompetitionTables
 
 case class SingletonCompetition(
   id:String,
