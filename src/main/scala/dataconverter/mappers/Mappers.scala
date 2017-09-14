@@ -74,11 +74,11 @@ object Mappers {
   def map(in: CResults)(implicit cc: ConversionContext): Results = {
     import in._
 
-    def map(r: CReport): Report = Report(r.team, eref(cc.add(Text(uuid, if(r.text.text == null) "" else r.text.text, "text/plain"))))
+    def map(r: CReport) = if(r.text.text == null || r.text.text.isEmpty) List.empty else List(Report(r.team, eref(cc.add(Text(uuid, r.text.text, "text/plain")))))
 
     def find(f: CFixture): Fixture = cc.get[Fixture].filter(p => p.date == dateToLocalDate(f.start) && p.home.id == f.home.id).head
 
-    val res = cc add results.map(r => Result(uuid, find(r.fixture), r.homeScore, r.awayScore, None, if(r.note == null) "" else r.note, r.reports.filter(r => r.text.text != null && !r.text.text.isEmpty).map(map _).toList)).toList
+    val res = cc add results.map(r => Result(uuid, find(r.fixture), r.homeScore, r.awayScore, None, if(r.note == null) "" else r.note, eref(cc add Reports(uuid,r.reports.flatMap(map _).toList)))).toList
 
     cc add Results(id, null, res.map(eref[Result] _))
   }

@@ -4,7 +4,7 @@ import java.util.Date
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.Duration
-import io.circe.generic.JsonCodec
+import io.circe.generic._
 
 import quizleague.util.json.codecs.ScalaTimeCodecs._
 import quizleague.util.json.codecs.DomainCodecs._

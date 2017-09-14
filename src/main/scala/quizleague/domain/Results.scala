@@ -13,9 +13,14 @@ case class Result(
     awayScore:Int,
     submitter:Option[Ref[User]],
     note:String,
-    reports:List[Report],
+    reports:Ref[Reports],
     retired:Boolean = false) extends Entity
     
+case class Reports(
+    id:String,
+    reports:List[Report],
+    retired:Boolean = false) extends Entity
+
 case class Report(
     team:Ref[Team],
     text:Ref[Text])
