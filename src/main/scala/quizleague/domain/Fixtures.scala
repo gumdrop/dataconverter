@@ -1,8 +1,8 @@
 package quizleague.domain
 
-import java.time.LocalTime
-import java.time.Duration
-import java.time.LocalDate
+import org.threeten.bp.LocalTime
+import org.threeten.bp.Duration
+import org.threeten.bp.LocalDate
 
 
 case class Fixtures(
@@ -25,5 +25,23 @@ case class Fixture(
   date: LocalDate,
   time: LocalTime,
   duration : Duration,
+  result : Option[Result],
   retired:Boolean = false
 ) extends BaseEvent with Entity
+
+case class Result(
+    homeScore:Int,
+    awayScore:Int,
+    submitter:Option[Ref[User]],
+    note:String,
+    reports:Option[Ref[Reports]]
+   )
+    
+case class Reports(
+    id:String,
+    reports:List[Report],
+    retired:Boolean = false) extends Entity
+
+case class Report(
+    team:Ref[Team],
+    text:Ref[Text])

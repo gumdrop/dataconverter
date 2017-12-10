@@ -124,7 +124,7 @@ object Mappers {
 
         val r = results.map(ref[Results] _).toList
         r.foreach(remapResults(cres, a) _)
-        LeagueCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, r, leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))), Option(subsidiaryCompetition))
+        LeagueCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))), Option(subsidiaryCompetition))
         
       }
       case a: CBeerCompetition => {
@@ -156,7 +156,7 @@ object Mappers {
 
         val r = results.map(ref[Results] _).toList
         r.foreach(remapResults(cres, a) _)
-        CupCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, r, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
+        CupCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
 
       }
       

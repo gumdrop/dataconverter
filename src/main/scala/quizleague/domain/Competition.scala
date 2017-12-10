@@ -1,9 +1,9 @@
 package quizleague.domain
 
 import java.util.Date
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.Duration
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
+import org.threeten.bp.Duration
 import io.circe.generic._
 
 import quizleague.util.json.codecs.ScalaTimeCodecs._
@@ -27,7 +27,7 @@ case class LeagueCompetition(
   startTime:LocalTime,
   duration:Duration,
   fixtures:List[Ref[Fixtures]],
-  results:List[Ref[Results]],
+
   tables:List[Ref[LeagueTable]],
   text:Ref[Text],
   subsidiary:Option[Ref[Competition]]
@@ -41,17 +41,17 @@ case class CupCompetition(
   startTime:LocalTime,
   duration:Duration,
   fixtures:List[Ref[Fixtures]],
-  results:List[Ref[Results]],
+
   text:Ref[Text]
 ) extends Competition with KnockoutCompetition
 
 case class SubsidiaryLeagueCompetition(
   id:String,
   name:String,
-  results:List[Ref[Results]], 
+ 
   tables:List[Ref[LeagueTable]],
   text:Ref[Text]
-) extends Competition with SubsidiaryCompetition with ResultsCompetition with CompetitionTables
+) extends Competition with SubsidiaryCompetition  with CompetitionTables
 
 case class SingletonCompetition(
   id:String,
@@ -78,16 +78,12 @@ object Competition
   val duration:Duration
 }
 
-sealed trait ResultsCompetition{
-   val results:List[Ref[Results]]
-}
 
  trait FixturesCompetition{
-  this:ResultsCompetition =>
   val fixtures:List[Ref[Fixtures]]
 }
 
- trait TeamCompetition extends FixturesCompetition with ResultsCompetition
+ trait TeamCompetition extends FixturesCompetition
 
  trait CompetitionTables{
     val tables:List[Ref[LeagueTable]]
