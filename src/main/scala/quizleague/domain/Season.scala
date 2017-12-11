@@ -1,6 +1,6 @@
 package quizleague.domain
 
-import org.threeten.bp.Year
+import java.time.Year
 
 case class Season(
     id:String,

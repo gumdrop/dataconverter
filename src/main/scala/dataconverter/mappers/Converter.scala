@@ -25,8 +25,6 @@ object Converter {
       cc.get[Fixture],
       cc.get[GlobalText],
       cc.get[LeagueTable],
-      cc.get[Results].filter(_.fixtures != null),
-      cc.get[Result],
       cc.get[Reports],
       cc.get[Season],
       cc.get[Team],
@@ -43,9 +41,8 @@ object Converter {
     get[Venue].foreach(map _)
     get[User].foreach(map _)
     get[Team].foreach(map _)
-    get[Fixtures].foreach(map _)
-    get[Results].foreach(map _)
-    get[Competition].foreach(map(get[Results]) _)
+    get[Fixtures].foreach(map(get[Results]) _)
+    get[Competition].foreach(map _)
     get[Season].foreach(map _)
     get[CommonText].foreach(map _)
     get[GlobalApplicationData].foreach(map(_)(cc))

@@ -1,9 +1,9 @@
 package quizleague.domain
 
 import java.util.Date
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
-import org.threeten.bp.Duration
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.Duration
 import io.circe.generic._
 
 import quizleague.util.json.codecs.ScalaTimeCodecs._

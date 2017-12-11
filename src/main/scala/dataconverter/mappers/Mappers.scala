@@ -9,6 +9,7 @@ import org.chilternquizleague.domain.{ TeamCompetition => CTeamCompetition }
 import org.chilternquizleague.domain.{ Fixtures => CFixtures }
 import org.chilternquizleague.domain.{ Fixture => CFixture }
 import org.chilternquizleague.domain.{ Results => CResults }
+import org.chilternquizleague.domain.{ Result => CResult }
 import org.chilternquizleague.domain.{ Report => CReport }
 import org.chilternquizleague.domain.{ LeagueTable => CLeagueTable }
 import org.chilternquizleague.domain.{ LeagueTableRow => CLeagueTableRow}
@@ -30,6 +31,7 @@ object Mappers {
 
   implicit def ref[T <: Entity](in: CRef[_])(implicit tag: ClassTag[T]): Ref[T] = if(in == null) null else Ref[T](tag, in.id)
   implicit def eref[T <: Entity](in: T)(implicit tag: ClassTag[T]): Ref[T] = Ref[T](tag, in.id)
+  implicit def erefOption[T <: Entity](in: Option[T])(implicit tag: ClassTag[T]): Option[Ref[T]] = in.map(x => Ref[T](tag, x.id))
 
   def map(in: CVenue)(implicit cc: ConversionContext): Venue = {
     import in._
@@ -59,30 +61,31 @@ object Mappers {
       calendar.map(e => CalendarEvent(ref(e.venue), e.start, e.start, duration(e.start, e.end), e.description)).toList)
   }
 
-  def map(in: CFixtures)(implicit cc: ConversionContext): Fixtures = {
+  def map(results: List[CResults])(in: CFixtures)(implicit cc: ConversionContext): Fixtures = {
     import in._
 
-    val fixs = cc add fixtures.map(f => Fixture(uuid, description, competitionType.toString, f.venue, f.home, f.away, f.start, f.start, duration(f.start, f.end))).toList
+    def find(f: CFixture) = {
+      
+      def map(r: CReport) = if(r.text.text == null || r.text.text.isEmpty) List.empty else List(Report(r.team, eref(cc.add(Text(uuid, r.text.text, "text/plain")))))
+      
+      def reports(reports:List[CReport]) = if(reports.isEmpty) None else Some(eref(cc add Reports(uuid,reports.flatMap(map _))))
+      
+      
+      val r = results.filter(p => dateToLocalDate(p.date) == dateToLocalDate(f.start)).flatMap(_.results.filter(_.fixture.home.id == f.home.id)).headOption
+      
+      r.map(r => Result(r.homeScore, r.awayScore, None, if(r.note == null) "" else r.note, reports(r.reports.toList)))
+    }
+    
+
+
+    
+    val fixs = cc add fixtures.map(f => Fixture(uuid, description, competitionType.toString, f.venue, f.home, f.away, f.start, f.start, duration(f.start, f.end), find(f))).toList
 
     cc add Fixtures(id, description, "", start, start, duration(start, end), fixs.map(eref[Fixture] _))
 
   }
 
-  /**
-   * must be run <em>after</em> map(CFixtures)
-   */
-  def map(in: CResults)(implicit cc: ConversionContext): Results = {
-    import in._
 
-    def map(r: CReport) = if(r.text.text == null || r.text.text.isEmpty) List.empty else List(Report(r.team, eref(cc.add(Text(uuid, r.text.text, "text/plain")))))
-
-    def find(f: CFixture): Fixture = cc.get[Fixture].filter(p => p.date == dateToLocalDate(f.start) && p.home.id == f.home.id).head
-
-    val res = cc add results.map(r => Result(uuid, find(r.fixture), r.homeScore, r.awayScore, None, if(r.note == null) "" else r.note, eref(cc add Reports(uuid,r.reports.flatMap(map _).toList)))).toList
-
-    cc add Results(id, null, res.map(eref[Result] _))
-  }
-  
   def map(in:CLeagueTable)(implicit cc: ConversionContext) = {
     import in._
     
@@ -95,7 +98,7 @@ object Mappers {
     
   }
 
-  def map(cres: List[CResults])(in: CCompetition)(implicit cc: ConversionContext): Competition = {
+  def map(in: CCompetition)(implicit cc: ConversionContext): Competition = {
 
     import org.chilternquizleague.domain
     import domain.{ LeagueCompetition => CLeagueCompetition }
@@ -104,26 +107,11 @@ object Mappers {
     import domain.{ IndividualCompetition => CIndividualCompetition }
     import domain.{ BuzzerCompetition => CBuzzerCompetition }
     
-    def remapResults(res: List[CResults], comp: CTeamCompetition)(inref: Ref[Results])(implicit cc: ConversionContext) = {
-
-      val in = cc.get[Results](inref.id)
-      import in._
-
-      val cres = res.filter(_.id.toString == in.id).head
-      def find(): Fixtures = {
-        cc.get[Fixtures].filter(i => comp.fixtures.exists(_.id == i.id)).filter(_.date == dateToLocalDate(cres.date)).head
-      }
-
-      cc replace Results(id, find(), results)
-
-    }
 
     val c: Competition = in match {
       case a: CLeagueCompetition => {
         import a._
 
-        val r = results.map(ref[Results] _).toList
-        r.foreach(remapResults(cres, a) _)
         LeagueCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))), Option(subsidiaryCompetition))
         
       }
@@ -145,17 +133,16 @@ object Mappers {
 //         
 //        r.foreach(remapResults(cres, parent.get) _)
 //        
-        results.foreach(r => cc remove[Results](r.id))
+//        results.foreach(r => cc remove[Results](r.id))
         
-        SubsidiaryLeagueCompetition(id, description, List(), leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
+        SubsidiaryLeagueCompetition(id, description, leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
 
       }
       
       case a: CKnockoutCompetition => {
         import a._
 
-        val r = results.map(ref[Results] _).toList
-        r.foreach(remapResults(cres, a) _)
+
         CupCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
 
       }
