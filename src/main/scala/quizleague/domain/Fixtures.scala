@@ -33,7 +33,7 @@ case class Result(
     homeScore:Int,
     awayScore:Int,
     submitter:Option[Ref[User]],
-    note:String,
+    note:Option[String],
     reports:Option[Ref[Reports]]
    )
     

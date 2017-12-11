@@ -73,13 +73,13 @@ object Mappers {
       
       val r = results.filter(p => dateToLocalDate(p.date) == dateToLocalDate(f.start)).flatMap(_.results.filter(_.fixture.home.id == f.home.id)).headOption
       
-      r.map(r => Result(r.homeScore, r.awayScore, None, if(r.note == null) "" else r.note, reports(r.reports.toList)))
+      r.map(r => Result(r.homeScore, r.awayScore, None, Option(r.note), reports(r.reports.toList)))
     }
     
 
 
     
-    val fixs = cc add fixtures.map(f => Fixture(uuid, description, competitionType.toString, f.venue, f.home, f.away, f.start, f.start, duration(f.start, f.end), find(f))).toList
+    val fixs = cc add fixtures.map(f => Fixture(uuid, description, "", f.venue, f.home, f.away, f.start, f.start, duration(f.start, f.end), find(f))).toList
 
     cc add Fixtures(id, description, "", start, start, duration(start, end), fixs.map(eref[Fixture] _))
 
