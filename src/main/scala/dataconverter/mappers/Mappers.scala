@@ -68,10 +68,11 @@ object Mappers {
       
       def map(r: CReport) = if(r.text.text == null || r.text.text.isEmpty) List.empty else List(Report(r.team, eref(cc.add(Text(uuid, r.text.text, "text/plain")))))
       
-      def reports(reports:List[CReport]) = if(reports.isEmpty) None else Some(eref(cc add Reports(uuid,reports.flatMap(map _))))
+      def reports(reports:List[CReport]) = if(reportsEmpty(reports)) None else Some(eref(cc add Reports(uuid,reports.flatMap(map _))))
       
+      def reportsEmpty(reports:List[CReport]) = reports.isEmpty || reports.forall(r => r.text == null || r.text.text == null || r.text.text.isEmpty())
       
-      val r = results.filter(p => dateToLocalDate(p.date) == dateToLocalDate(f.start)).flatMap(_.results.filter(_.fixture.home.id == f.home.id)).headOption
+      val r = results.filter(p => dateToLocalDate(p.date) == dateToLocalDate(f.start) && !p.description.toLowerCase().contains("beer")).flatMap(_.results.filter(_.fixture.home.id == f.home.id)).headOption
       
       r.map(r => Result(r.homeScore, r.awayScore, None, Option(r.note), reports(r.reports.toList)))
     }
