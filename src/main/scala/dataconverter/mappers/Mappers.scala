@@ -105,6 +105,7 @@ object Mappers {
     import domain.{ LeagueCompetition => CLeagueCompetition }
     import domain.{ BeerCompetition => CBeerCompetition }
     import domain.{ KnockoutCompetition => CKnockoutCompetition }
+    import domain.{CupCompetition => CCupCompetition, PlateCompetition => CPlateCompetition}
     import domain.{ IndividualCompetition => CIndividualCompetition }
     import domain.{ BuzzerCompetition => CBuzzerCompetition }
     
@@ -142,9 +143,12 @@ object Mappers {
       
       case a: CKnockoutCompetition => {
         import a._
+        val textName = a match{
+          case c:CCupCompetition => "cup-comp"
+          case c:CPlateCompetition => "plate-comp"
+        }
 
-
-        CupCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
+        CupCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),textName)
 
       }
       
