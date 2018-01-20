@@ -17,6 +17,7 @@ import org.chilternquizleague.domain.{ Ref => CRef }
 import quizleague.domain._
 import java.util.UUID.{ randomUUID => uuid }
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 import scala.reflect.ClassTag
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -120,24 +121,25 @@ object Mappers {
       case a: CBeerCompetition => {
         import a._
 
-        
-        def parentPred(c:CCompetition):Boolean = {
-          c match {
-          case d:CLeagueCompetition => {
-            if (d.subsidiaryCompetition != null) d.subsidiaryCompetition.id.toString == a.id else false
-          }
-          case _ => false}
+        def makeFix(result:CResult) = {
+          eref(cc add Fixture(uuid, description,"", result.fixture.getVenue, result.fixture.home, result.fixture.away, result.fixture.start, result.fixture.end, duration(result.fixture.start,result.fixture.end),Some(Result(result.homeScore,result.awayScore,None,None,None))))
         }
         
-//        val parent = cc.getInput[CCompetition](parentPred _).asInstanceOf[Option[CLeagueCompetition]]
-//        
-//        val r = results.map(ref[Results] _).toList
-//         
-//        r.foreach(remapResults(cres, parent.get) _)
-//        
-//        results.foreach(r => cc remove[Results](r.id))
+        val r = results.asScala
         
-        SubsidiaryLeagueCompetition(id, description, leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),icon = Some("mdi-glass-mug"))
+        val fixtures = 
+        
+        for(
+          res <- r
+          
+        )yield{
+            val rr = cc.getInput[CResults](_.id.toString == res.id).get
+            cc add Fixtures(rr.id, description,"", rr.date,rr.date,duration(rr.date,rr.date), rr.results.map(makeFix _).toList)
+        
+        }
+
+        
+        SubsidiaryLeagueCompetition(id, description, fixtures.map(eref _).toList,leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),icon = Some("mdi-glass-mug"))
 
       }
       
