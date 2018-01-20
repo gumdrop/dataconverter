@@ -17,6 +17,7 @@ sealed trait Competition extends Entity
   
   val name:String
   val text:Ref[Text]
+  val icon:Option[String]
   override val retired = false
   
 }
@@ -31,7 +32,8 @@ case class LeagueCompetition(
   tables:List[Ref[LeagueTable]],
   text:Ref[Text],
   subsidiary:Option[Ref[Competition]],
-  textName:String = "league-comp"
+  textName:String = "league-comp",
+  icon:Option[String] = None
   
 ) extends Competition with MainLeagueCompetition
 
@@ -44,7 +46,8 @@ case class CupCompetition(
   fixtures:List[Ref[Fixtures]],
 
   text:Ref[Text],
-  textName:String 
+  textName:String,
+  icon:Option[String] = None
 ) extends Competition with KnockoutCompetition
 
 case class SubsidiaryLeagueCompetition(
@@ -53,7 +56,8 @@ case class SubsidiaryLeagueCompetition(
  
   tables:List[Ref[LeagueTable]],
   text:Ref[Text],
-  textName:String = "beer-comp"
+  textName:String = "beer-comp",
+  icon:Option[String] = None
 ) extends Competition with SubsidiaryCompetition  with CompetitionTables
 
 case class SingletonCompetition(
@@ -61,7 +65,8 @@ case class SingletonCompetition(
   name:String,
   event:Option[Event],
   textName:String,
-  text:Ref[Text]
+  text:Ref[Text],
+  icon:Option[String] = None
 ) extends Competition with BaseSingletonCompetition
 
 object Competition

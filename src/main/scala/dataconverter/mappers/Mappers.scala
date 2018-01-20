@@ -114,7 +114,7 @@ object Mappers {
       case a: CLeagueCompetition => {
         import a._
 
-        LeagueCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))), Option(subsidiaryCompetition))
+        LeagueCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))), Option(subsidiaryCompetition),icon = Some("mdi-table-large"))
         
       }
       case a: CBeerCompetition => {
@@ -137,7 +137,7 @@ object Mappers {
 //        
 //        results.foreach(r => cc remove[Results](r.id))
         
-        SubsidiaryLeagueCompetition(id, description, leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
+        SubsidiaryLeagueCompetition(id, description, leagueTables.map(t => eref(map(t))).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),icon = Some("mdi-glass-mug"))
 
       }
       
@@ -147,15 +147,20 @@ object Mappers {
           case c:CCupCompetition => "cup-comp"
           case c:CPlateCompetition => "plate-comp"
         }
+        
+        val iconName = a match{
+          case c:CCupCompetition => "mdi-coffee-outline"
+          case c:CPlateCompetition => "mdi-octagon-outline"
+        }
 
-        CupCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),textName)
+        CupCompetition(id, description, startTime, duration(startTime, endTime), fixtures.map(ref[Fixtures] _).toList, eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),textName, Some(iconName))
 
       }
       
       case a: CIndividualCompetition => {
         import a._
 
-        SingletonCompetition(id, "Individual", if(event.venue == null) None else Some(Event(event.venue, event.start, event.start, duration(event.start, event.end))),"individuals_front_page" ,eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
+        SingletonCompetition(id, "Individual", if(event.venue == null) None else Some(Event(event.venue, event.start, event.start, duration(event.start, event.end))),"individuals_front_page" ,eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),Some("mdi-account-outline"))
 
       }
       
@@ -166,7 +171,7 @@ object Mappers {
             id, 
             "Buzzer Quiz", 
             if(event.venue == null) None else Some(Event(event.venue, event.start, event.start, duration(event.start, event.end))),
-            "buzzer_front_page" ,eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))))
+            "buzzer_front_page" ,eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),Some("mdi-bell-ring-outline"))
 
       }
     }
