@@ -162,7 +162,7 @@ object Mappers {
       case a: CIndividualCompetition => {
         import a._
 
-        SingletonCompetition(id, "Individual", if(event.venue == null) None else Some(Event(event.venue, event.start, event.start, duration(event.start, event.end))),"individuals_front_page" ,eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),Some("mdi-account-outline"))
+        SingletonCompetition(id, "Individual", if(event.venue == null) None else Some(Event(event.venue, event.start, event.start, duration(event.start, event.end))),"indiv-comp" ,eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),Some("mdi-account-outline"))
 
       }
       
@@ -173,7 +173,7 @@ object Mappers {
             id, 
             "Buzzer Quiz", 
             if(event.venue == null) None else Some(Event(event.venue, event.start, event.start, duration(event.start, event.end))),
-            "buzzer_front_page" ,eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),Some("mdi-bell-ring-outline"))
+            "buzzer-comp" ,eref(cc.add(Text(uuid, if(text == null) "" else text, "text/html"))),Some("mdi-bell-ring-outline"))
 
       }
     }
