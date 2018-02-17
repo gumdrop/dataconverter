@@ -122,7 +122,7 @@ object Mappers {
         import a._
 
         def makeFix(result:CResult) = {
-          eref(cc add Fixture(uuid, description,"", result.fixture.getVenue, result.fixture.home, result.fixture.away, result.fixture.start, result.fixture.end, duration(result.fixture.start,result.fixture.end),Some(Result(result.homeScore,result.awayScore,None,None,None))))
+          eref(cc add Fixture(uuid, description,"", result.fixture.getVenue, result.fixture.home, result.fixture.away, result.fixture.start, result.fixture.end, duration(result.fixture.start,result.fixture.end),Some(Result(result.homeScore,result.awayScore,None,None,None)),true))
         }
         
         val r = results.asScala

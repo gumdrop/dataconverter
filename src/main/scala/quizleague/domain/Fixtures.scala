@@ -26,6 +26,7 @@ case class Fixture(
   time: LocalTime,
   duration : Duration,
   result : Option[Result],
+  subsidiary:Boolean = false,
   retired:Boolean = false
 ) extends BaseEvent with Entity
 
